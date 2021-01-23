@@ -1,0 +1,14 @@
+{
+  "name": "socbyte-backend",
+  "version": "1.0.0",
+  "description": "This is the current backend of socbyte android or native app which contains the code to fetch the songs from youtube-music-api and provide it to the frontend",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "socbyte-backend"
+  ],
+  "author": "Sobhan Bera",
+  "license": "ISC"
+}
