@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000;
 let available = false;
 const Youtube = new YoutubeMusicApi();
 Youtube.initalize().then(() => {
+	console.log(available, 'READY TO SERVE');
 	available = true;
 });
 
@@ -16,7 +17,7 @@ app.get('/', (req, res) => {
 	res.status(200).send(reponseData);
 });
 
-app.get('/msc', (req, res) => {
+app.get('/video', (req, res) => {
 	if (req.query.key !== key) {
 		res.status(400).send(errorData.accessNotAllowed);
 	} else if (!req.query.query) {
@@ -32,9 +33,41 @@ app.get('/msc', (req, res) => {
 				});
 		} else {
 			Youtube.initalize().then(() => {
+				console.log(available, 'READY TO SERVE VIDEO');
 				available = true;
 
 				Youtube.search(req.query.query, 'video')
+					.then(result => {
+						res.status(200).send(result);
+					})
+					.catch(error => {
+						res.status(203).send(error);
+					});
+			});
+		}
+	}
+});
+
+app.get('/msc', (req, res) => {
+	if (req.query.key !== key) {
+		res.status(400).send(errorData.accessNotAllowed);
+	} else if (!req.query.query) {
+		res.status(404).send(errorData.invalidQuery);
+	} else {
+		if (available) {
+			Youtube.search(req.query.query, 'song')
+				.then(result => {
+					res.status(200).send(result);
+				})
+				.catch(error => {
+					res.status(203).send(error);
+				});
+		} else {
+			Youtube.initalize().then(() => {
+				console.log(available, 'READY TO SERVE SONGS');
+				available = true;
+
+				Youtube.search(req.query.query, 'song')
 					.then(result => {
 						res.status(200).send(result);
 					})
@@ -62,6 +95,7 @@ app.get('/plt', (req, res) => {
 				});
 		} else {
 			Youtube.initalize().then(() => {
+				console.log(available, 'READY TO SERVE PLAYLIST');
 				available = true;
 
 				Youtube.search(req.query.query, 'playlist')
