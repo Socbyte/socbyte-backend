@@ -1,6 +1,7 @@
 const express = require('express');
 const YoutubeMusicApi = require('youtube-music-api');
 const key = require('./key');
+const { reponseData, errorData } = require('./responeData');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,37 +13,22 @@ Youtube.initalize().then(() => {
 });
 
 app.get('/', (req, res) => {
-	const body = {
-		simple_query: `https://socbyte-backend.herokuapp.com/?id={youtube_video_id}`,
-	};
-	res.send(body);
+	res.status(200).send(reponseData);
 });
 
-app.get('/music', (req, res) => {
+app.get('/msc', (req, res) => {
 	if (req.query.key !== key) {
-		res.send({
-			status: 400,
-			error: {
-				code: 'accessNotAllowed',
-				message: "you don't have access to retrieve data from this link",
-			},
-		});
+		res.status(400).send(errorData.accessNotAllowed);
 	} else if (!req.query.query) {
-		res.send({
-			status: 400,
-			error: {
-				code: 'undefined/query',
-				message: 'the query you have provided is not valid',
-			},
-		});
+		res.status(404).send(errorData.invalidQuery);
 	} else {
 		if (available) {
 			Youtube.search(req.query.query, 'video')
 				.then(result => {
-					res.send(result);
+					res.status(200).send(result);
 				})
 				.catch(error => {
-					res.send(error);
+					res.status(203).send(error);
 				});
 		} else {
 			Youtube.initalize().then(() => {
@@ -50,10 +36,40 @@ app.get('/music', (req, res) => {
 
 				Youtube.search(req.query.query, 'video')
 					.then(result => {
-						res.send(result);
+						res.status(200).send(result);
 					})
 					.catch(error => {
-						res.send(error);
+						res.status(203).send(error);
+					});
+			});
+		}
+	}
+});
+
+app.get('/plt', (req, res) => {
+	if (req.query.key !== key) {
+		res.status(400).send(errorData.accessNotAllowed);
+	} else if (!req.query.query) {
+		res.status(404).send(errorData.invalidQuery);
+	} else {
+		if (available) {
+			Youtube.search(req.query.query, 'playlist')
+				.then(result => {
+					res.status(200).send(result);
+				})
+				.catch(error => {
+					res.status(403).send(error);
+				});
+		} else {
+			Youtube.initalize().then(() => {
+				available = true;
+
+				Youtube.search(req.query.query, 'playlist')
+					.then(result => {
+						res.status(200).send(result);
+					})
+					.catch(error => {
+						res.status(403).send(error);
 					});
 			});
 		}
