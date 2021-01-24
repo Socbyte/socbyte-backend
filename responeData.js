@@ -17,6 +17,14 @@ const invalidQuery = {
 	},
 };
 
+const pageNotFound = {
+	status: 404,
+	error: {
+		code: 'page not found',
+		message: 'this page is invalid and contains no data for you',
+	},
+};
+
 const mainResponse = {
 	status: 200,
 	message: {
@@ -31,6 +39,7 @@ module.exports = {
 	errorData: {
 		invalidQuery,
 		accessNotAllowed,
+		pageNotFound,
 	},
 	reponseData: {
 		mainResponse,

@@ -110,4 +110,8 @@ app.get('/plt', (req, res) => {
 	}
 });
 
+app.get('/*', (req, res) => {
+	res.status(400).send(errorData.pageNotFound);
+});
+
 app.listen(PORT, () => console.log('server has been started...'));
