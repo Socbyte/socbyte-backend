@@ -57,7 +57,7 @@ app.get('/msc', (req, res) => {
 		if (available) {
 			Youtube.search(req.query.query, 'song')
 				.then(result => {
-					res.status(200).send(result.content);
+					res.status(200).send(result);
 				})
 				.catch(error => {
 					res.status(203).send(error);
@@ -69,7 +69,7 @@ app.get('/msc', (req, res) => {
 
 				Youtube.search(req.query.query, 'song')
 					.then(result => {
-						res.status(200).send(result.content);
+						res.status(200).send(result);
 					})
 					.catch(error => {
 						res.status(203).send(error);
