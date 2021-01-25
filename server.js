@@ -119,7 +119,9 @@ app.get('/searchq', (req, res) => {
 		if (available) {
 			Youtube.getSearchSuggestions(req.query.query)
 				.then(result => {
-					res.status(200).send(result);
+					res.status(200).send({
+						data: result,
+					});
 				})
 				.catch(error => {
 					res.status(403).send(error);
