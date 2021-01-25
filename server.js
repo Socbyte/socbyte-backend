@@ -26,7 +26,7 @@ app.get('/video', (req, res) => {
 		if (available) {
 			Youtube.search(req.query.query, 'video')
 				.then(result => {
-					res.status(200).send(result);
+					res.status(200).send(result.content);
 				})
 				.catch(error => {
 					res.status(203).send(error);
@@ -38,7 +38,7 @@ app.get('/video', (req, res) => {
 
 				Youtube.search(req.query.query, 'video')
 					.then(result => {
-						res.status(200).send(result);
+						res.status(200).send(result.content);
 					})
 					.catch(error => {
 						res.status(203).send(error);
@@ -57,7 +57,7 @@ app.get('/msc', (req, res) => {
 		if (available) {
 			Youtube.search(req.query.query, 'song')
 				.then(result => {
-					res.status(200).send(result);
+					res.status(200).send(result.content);
 				})
 				.catch(error => {
 					res.status(203).send(error);
@@ -69,7 +69,7 @@ app.get('/msc', (req, res) => {
 
 				Youtube.search(req.query.query, 'song')
 					.then(result => {
-						res.status(200).send(result);
+						res.status(200).send(result.content);
 					})
 					.catch(error => {
 						res.status(203).send(error);
@@ -88,7 +88,7 @@ app.get('/plt', (req, res) => {
 		if (available) {
 			Youtube.search(req.query.query, 'playlist')
 				.then(result => {
-					res.status(200).send(result);
+					res.status(200).send(result.content);
 				})
 				.catch(error => {
 					res.status(403).send(error);
@@ -99,6 +99,37 @@ app.get('/plt', (req, res) => {
 				available = true;
 
 				Youtube.search(req.query.query, 'playlist')
+					.then(result => {
+						res.status(200).send(result.content);
+					})
+					.catch(error => {
+						res.status(403).send(error);
+					});
+			});
+		}
+	}
+});
+
+app.get('/searchq', (req, res) => {
+	if (req.query.key !== key) {
+		res.status(400).send(errorData.accessNotAllowed);
+	} else if (!req.query.query) {
+		res.status(404).send(errorData.invalidQuery);
+	} else {
+		if (available) {
+			Youtube.getSearchSuggestions(req.query.query)
+				.then(result => {
+					res.status(200).send(result);
+				})
+				.catch(error => {
+					res.status(403).send(error);
+				});
+		} else {
+			Youtube.initalize().then(() => {
+				console.log(available, 'READY TO SERVE PLAYLIST');
+				available = true;
+
+				Youtube.getSearchSuggestions(req.query.query)
 					.then(result => {
 						res.status(200).send(result);
 					})
